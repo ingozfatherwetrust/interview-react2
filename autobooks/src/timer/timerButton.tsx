@@ -15,10 +15,10 @@ export class TimerButton extends Component<TestProps> {
         return (
             <div>
                 <Grid container xs={12} className={'spacedRow'}>
-                    <Button variant="contained" color="primary">
+                    <Button variant="contained" color="primary" disabled={this.props.isClockedIn} onClick={this.props.onPressClockIn}>
                         Clock in
                     </Button>
-                    <Button variant="contained" color="secondary" disabled={true}>
+                    <Button variant="contained" color="secondary" disabled={!this.props.isClockedIn} onClick={this.props.onPressClockOut}>
                         Clock out
                     </Button>
                 </Grid>
