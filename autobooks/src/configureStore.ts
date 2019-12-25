@@ -2,10 +2,15 @@ import {applyMiddleware, compose, createStore} from "redux";
 import createSagaMiddleware from 'redux-saga'
 import sagas from './redux-store/sagas'
 import {todos} from "./App";
+import {TimeEntry} from "./autoBooksTable/autoBooksTable";
 
 const sagaMiddleware = createSagaMiddleware();
 
-export function initialState() {
+export interface StoreInterface {
+    newClockInInstances: TimeEntry[]
+}
+
+export function initialState(): StoreInterface {
     return {
         newClockInInstances: []
     }

@@ -4,21 +4,28 @@ import {Grid} from "@material-ui/core";
 import {AppHeader} from "../header/appHeader";
 import {AutoBooksTable, TimeEntry} from "../autoBooksTable/autoBooksTable";
 import {TimerButton} from "../timer/timerButton";
+import {clockIn, ClockInAction, clockOut, ClockOutAction} from "./actions/base";
+import {connect} from "react-redux";
+import {bindActionCreators, Dispatch} from "redux";
 
 interface TimeEntryState {
     timeEntries: TimeEntry[];
     clockedIn: boolean;
 }
+type props = {};
 
-export class Base extends Component<{}, TimeEntryState> {
+interface PropsFromDispatch {
+    clockIn: (clockInTime: number) => ClockInAction;
+    clockOut: (clockOutTime: number) => ClockOutAction;
+}
+
+export type ComponentProps = props & PropsFromDispatch;
+
+class Base extends Component<ComponentProps, TimeEntryState> {
     state: TimeEntryState = {
         timeEntries: [],
         clockedIn: false
     };
-    getDerivedStateFromProps(prevState: TimeEntryState) {
-        alert(JSON.stringify(prevState));
-        sessionStorage.setItem('clockInTimes', JSON.stringify(this.state));
-    }
     private onClockInPressed = async () => {
         let newTimeEntry: TimeEntry = {
             clockInTime: Date.now()
@@ -27,6 +34,7 @@ export class Base extends Component<{}, TimeEntryState> {
             timeEntries: [...prevState.timeEntries, newTimeEntry],
             clockedIn: true
         }));
+        this.props.clockIn(newTimeEntry.clockInTime);
         sessionStorage.setItem('clockInTimes', JSON.stringify(this.state));
     };
     private onClockOutPressed =  async () => {
@@ -37,6 +45,7 @@ export class Base extends Component<{}, TimeEntryState> {
             timeEntries: newTimeEntries,
             clockedIn: false
         });
+        this.props.clockOut((newTimeEntries[lastItem].clockOutTime as number));
         sessionStorage.setItem('clockInTimes', JSON.stringify(this.state));
     };
     componentDidMount() {
@@ -67,3 +76,10 @@ export class Base extends Component<{}, TimeEntryState> {
         )
     }
 }
+
+const mapDispatchToProps = (dispatch: Dispatch): PropsFromDispatch => ({
+    clockIn: bindActionCreators(clockIn, dispatch),
+    clockOut: bindActionCreators(clockOut, dispatch)
+});
+
+export default connect(null, mapDispatchToProps)(Base)
