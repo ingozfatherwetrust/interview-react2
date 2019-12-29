@@ -1,4 +1,4 @@
-import {applyMiddleware, compose, createStore} from "redux";
+import {applyMiddleware, createStore} from "redux";
 import createSagaMiddleware from 'redux-saga'
 import sagas from './redux-store/sagas'
 import {todos} from "./App";
@@ -16,12 +16,14 @@ export function initialState(): StoreInterface {
     }
 };
 
-export default function configureStore() {
+// export default function configureStore() {
     // let initialState = {
     //     newClockInInstances: []
     // };
     // const store = createStore(todos, initialState, compose(applyMiddleware(sagaMiddleware)));
-    const store = createStore(todos, initialState(), applyMiddleware(sagaMiddleware));
-    sagaMiddleware.run(sagas);
-    return store;
-}
+const store = createStore(todos, initialState(), applyMiddleware(sagaMiddleware));
+
+sagaMiddleware.run(sagas);
+
+export default store;
+// }

@@ -6,13 +6,21 @@ import {AutoBooksTable, TimeEntry} from "../autoBooksTable/autoBooksTable";
 import {TimerButton} from "../timer/timerButton";
 import {clockIn, ClockInAction, clockOut, ClockOutAction} from "./actions/base";
 import {connect} from "react-redux";
-import {bindActionCreators, Dispatch} from "redux";
+import {bindActionCreators, Dispatch, Store} from "redux";
+import store from "../configureStore";
+// import {getNewClockInstances, getNewClockInstances as store, todos} from "../App";
+// import configureStore from "../configureStore";
 
 interface TimeEntryState {
     timeEntries: TimeEntry[];
     clockedIn: boolean;
 }
 type props = {};
+
+interface PropsFromState {
+    timeEntries: TimeEntry[],
+    clockedIn: boolean
+}
 
 interface PropsFromDispatch {
     clockIn: (clockInTime: number) => ClockInAction;
@@ -22,20 +30,36 @@ interface PropsFromDispatch {
 export type ComponentProps = props & PropsFromDispatch;
 
 class Base extends Component<ComponentProps, TimeEntryState> {
-    state: TimeEntryState = {
-        timeEntries: [],
-        clockedIn: false
-    };
+
+    constructor(props: ComponentProps) {
+        super(props);
+
+        this.state = {
+            timeEntries: [],
+            clockedIn: false
+        };
+
+        // store.subscribe(() => {
+        //
+        // })
+
+    }
+    // state: TimeEntryState = {
+    //     timeEntries: [],
+    //     clockedIn: false
+    // };
     private onClockInPressed = async () => {
         let newTimeEntry: TimeEntry = {
             clockInTime: Date.now()
         };
-        await this.setState(prevState => ({
-            timeEntries: [...prevState.timeEntries, newTimeEntry],
-            clockedIn: true
-        }));
-        this.props.clockIn(newTimeEntry.clockInTime);
-        sessionStorage.setItem('clockInTimes', JSON.stringify(this.state));
+        // await this.setState(prevState => ({
+        //     timeEntries: [...prevState.timeEntries, newTimeEntry],
+        //     clockedIn: true
+        // }));
+        await this.props.clockIn(newTimeEntry.clockInTime);
+        alert(JSON.stringify(store.getState()))
+        // alert(JSON.stringify(configureStore().getState()));
+        // sessionStorage.setItem('clockInTimes', JSON.stringify(this.state));
     };
     private onClockOutPressed =  async () => {
         const newTimeEntries = this.state.timeEntries;
@@ -50,6 +74,7 @@ class Base extends Component<ComponentProps, TimeEntryState> {
     };
     componentDidMount() {
         let sessionData = sessionStorage.getItem('clockInTimes');
+        alert(sessionData);
         if(sessionData) {
             let sessionDataJSON: TimeEntryState = JSON.parse(sessionData);
             this.setState({
@@ -69,13 +94,17 @@ class Base extends Component<ComponentProps, TimeEntryState> {
                     alignItems="center"
                 >
                     <AppHeader/>
-                    <AutoBooksTable newClockInInstances={this.state.timeEntries}/>
+                    {/*<AutoBooksTable newClockInInstances={this.state.timeEntries}/>*/}
                     <TimerButton onPressClockIn={this.onClockInPressed} onPressClockOut={this.onClockOutPressed} isClockedIn={this.state.clockedIn}/>
                 </Grid>
             </div>
         )
     }
 }
+
+// const mapStateToProps = (state) => ({
+//     t
+// })
 
 const mapDispatchToProps = (dispatch: Dispatch): PropsFromDispatch => ({
     clockIn: bindActionCreators(clockIn, dispatch),
