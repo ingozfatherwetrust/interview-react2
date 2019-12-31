@@ -4,7 +4,8 @@ import {
     addClockOutToStore,
     ClockInAction,
     ClockInActionTypes,
-    ClockOutAction
+    ClockOutAction,
+    putSessionInStore
 } from "../actions/base";
 import {getNewClockInstances} from "../../App";
 import {StoreInterface} from "../../configureStore";
@@ -12,13 +13,14 @@ import {StoreInterface} from "../../configureStore";
 function * clockInSaga(action: ClockInAction) {
     let {clockInTime} = action;
     yield put(addClockInToStore(clockInTime));
-    yield call(addStoreToSession)
+    yield call(addStoreToSession);
 
 }
 
 function * clockOutSaga(action: ClockOutAction) {
     let {clockOutTime} = action;
-    yield put(addClockOutToStore(clockOutTime))
+    yield put(addClockOutToStore(clockOutTime));
+    yield call(addStoreToSession);
 }
 
 function * addStoreToSession() {
@@ -26,7 +28,13 @@ function * addStoreToSession() {
     sessionStorage.setItem('clockInTimes', JSON.stringify(clockInstance));
 }
 
+function * getSessionSaga() {
+    let sessionData = yield sessionStorage.getItem('clockInTimes');
+    yield put(putSessionInStore(JSON.parse(sessionData)))
+}
+
 export default function* baseMain() {
     yield takeEvery (ClockInActionTypes.clockIn, clockInSaga);
     yield takeEvery(ClockInActionTypes.clockOut, clockOutSaga);
+    yield takeEvery(ClockInActionTypes.getSessionData, getSessionSaga);
 }

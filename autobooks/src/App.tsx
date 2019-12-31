@@ -1,13 +1,10 @@
 import React, {Component} from 'react';
 import './App.css';
-import {default as store, StoreInterface} from "./configureStore";
+import {default as configureStore, StoreInterface} from "./configureStore";
 import { Provider } from 'react-redux'
 import { initialState} from "./configureStore";
 import Base from "./base/base";
 import {
-    AddClockInToStoreAction,
-    AddClockOutToStoreAction,
-    ClockInAction,
     ClockInActionTypes
 } from "./base/actions/base";
 import {TimeEntry} from "./autoBooksTable/autoBooksTable";
@@ -17,7 +14,7 @@ export default class App extends Component {
 
     render() {
         return (
-            <Provider store={store}>
+            <Provider store={configureStore()}>
                 <Base/>
             </Provider>
         )
@@ -29,22 +26,28 @@ export const getNewClockInstances = (state: StoreInterface): StoreInterface => {
 
 };
 
-export function todos(state: StoreInterface = initialState(), action: AddClockInToStoreAction | AddClockOutToStoreAction) {
+export function todos(state: StoreInterface = initialState(), action: any) {
+    // alert('state: ' + JSON.stringify(state));
     switch (action.type) {
         case ClockInActionTypes.addClockInToStore:
-            let clockedInString = new Date(action.clockInTime);
+            // let clockedInString = new Date(action.clockInTime);
+            let clockedInString = action.clockInTime;
             let newTimeInstance: TimeEntry = {
                 clockInTime: clockedInString
             };
-            // state.newClockInInstance
-            // state['newClockInstances'] = [...state.newClockInstances, newTimeInstance];
-            // alert(JSON.stringify(state));
+            state.newClockInInstances = state.newClockInInstances.concat(newTimeInstance);
             return {
-                newClockInInstances: [...state.newClockInInstances, newTimeInstance]
+                newClockInInstances: state.newClockInInstances
             };
         case ClockInActionTypes.addClockOutToStore:
-            alert(JSON.stringify(state));
+            let lastClockInInstance = state.newClockInInstances.length - 1;
+            state.newClockInInstances[lastClockInInstance] = {
+                clockInTime: state.newClockInInstances[lastClockInInstance].clockInTime,
+                clockOutTime: action.clockOutTime
+            };
             return state;
+        case ClockInActionTypes.putSessionInStore:
+            return action.timeEntries;
         default:
             return state
     }

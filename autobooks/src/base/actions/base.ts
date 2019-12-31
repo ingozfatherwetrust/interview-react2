@@ -1,10 +1,13 @@
 import {Action} from "redux";
+import {TimeEntry} from "../../autoBooksTable/autoBooksTable";
 
 export enum ClockInActionTypes {
     clockIn = 'clockIn',
     clockOut = 'clockOut',
     addClockInToStore = 'addClockInToStore',
-    addClockOutToStore = 'addClockOutToStore'
+    addClockOutToStore = 'addClockOutToStore',
+    getSessionData = 'getSessionData',
+    putSessionInStore = 'putSessionInStore'
 }
 
 export interface ClockInAction extends Action{
@@ -25,6 +28,15 @@ export interface AddClockInToStoreAction extends Action{
 export interface AddClockOutToStoreAction extends Action{
     type: ClockInActionTypes.addClockOutToStore,
     clockOutTime: number
+}
+
+export interface GetSessionDataAction extends Action {
+    type: ClockInActionTypes.getSessionData
+}
+
+export interface PutSessionInStoreAction extends Action {
+    type: ClockInActionTypes.putSessionInStore,
+    timeEntries: TimeEntry[]
 }
 
 export function clockIn(clockInTime: number): ClockInAction {
@@ -52,5 +64,18 @@ export function addClockOutToStore(clockOutTime: number): AddClockOutToStoreActi
     return {
         type: ClockInActionTypes.addClockOutToStore,
         clockOutTime
+    }
+}
+
+export function getSessionData(): GetSessionDataAction {
+    return {
+        type: ClockInActionTypes.getSessionData
+    }
+}
+
+export function putSessionInStore(timeEntries: TimeEntry[]): PutSessionInStoreAction {
+    return {
+        type: ClockInActionTypes.putSessionInStore,
+        timeEntries
     }
 }

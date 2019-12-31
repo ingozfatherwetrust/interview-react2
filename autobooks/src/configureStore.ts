@@ -16,14 +16,17 @@ export function initialState(): StoreInterface {
     }
 };
 
-// export default function configureStore() {
+const configureStore = () => {
     // let initialState = {
     //     newClockInInstances: []
     // };
     // const store = createStore(todos, initialState, compose(applyMiddleware(sagaMiddleware)));
-const store = createStore(todos, initialState(), applyMiddleware(sagaMiddleware));
+    const store = createStore(todos, initialState(), applyMiddleware(sagaMiddleware));
 
-sagaMiddleware.run(sagas);
+    sagaMiddleware.run(sagas);
 
-export default store;
-// }
+    return store;
+};
+
+export default configureStore;
+
