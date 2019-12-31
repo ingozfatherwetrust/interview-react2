@@ -12,7 +12,8 @@ export enum ClockInActionTypes {
 
 export interface ClockInAction extends Action{
     type: ClockInActionTypes.clockIn,
-    clockInTime: number
+    clockInTime: number,
+    description: string
 }
 
 export interface ClockOutAction extends Action{
@@ -23,6 +24,7 @@ export interface ClockOutAction extends Action{
 export interface AddClockInToStoreAction extends Action{
     type: ClockInActionTypes.addClockInToStore,
     clockInTime: number
+    description: string
 }
 
 export interface AddClockOutToStoreAction extends Action{
@@ -39,10 +41,11 @@ export interface PutSessionInStoreAction extends Action {
     timeEntries: TimeEntry[]
 }
 
-export function clockIn(clockInTime: number): ClockInAction {
+export function clockIn(clockInTime: number, description: string): ClockInAction {
     return {
         type: ClockInActionTypes.clockIn,
-        clockInTime
+        clockInTime,
+        description
     }
 }
 
@@ -53,10 +56,11 @@ export function clockOut(clockOutTime: number): ClockOutAction {
     }
 }
 
-export function addClockInToStore(clockInTime: number): AddClockInToStoreAction {
+export function addClockInToStore(clockInTime: number, description: string): AddClockInToStoreAction {
     return {
         type: ClockInActionTypes.addClockInToStore,
-        clockInTime
+        clockInTime,
+        description
     }
 }
 

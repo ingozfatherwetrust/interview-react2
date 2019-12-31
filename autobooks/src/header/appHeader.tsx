@@ -17,8 +17,8 @@ export class AppHeader extends Component<AppHeaderProps, AppHeaderState> {
         descriptionText: ''
     };
 
-    private headerTextChanged = (headerText: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
+    private headerTextChanged = async (headerText: React.ChangeEvent<HTMLInputElement>) => {
+        await this.setState({
             descriptionText: headerText.target.value
         });
         this.props.descriptionChanged(this.state.descriptionText)

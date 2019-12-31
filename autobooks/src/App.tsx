@@ -27,13 +27,13 @@ export const getNewClockInstances = (state: StoreInterface): StoreInterface => {
 };
 
 export function todos(state: StoreInterface = initialState(), action: any) {
-    // alert('state: ' + JSON.stringify(state));
     switch (action.type) {
         case ClockInActionTypes.addClockInToStore:
-            // let clockedInString = new Date(action.clockInTime);
+            console.log(action);
             let clockedInString = action.clockInTime;
             let newTimeInstance: TimeEntry = {
-                clockInTime: clockedInString
+                clockInTime: clockedInString,
+                description: action.description
             };
             state.newClockInInstances = state.newClockInInstances.concat(newTimeInstance);
             return {
@@ -43,7 +43,8 @@ export function todos(state: StoreInterface = initialState(), action: any) {
             let lastClockInInstance = state.newClockInInstances.length - 1;
             state.newClockInInstances[lastClockInInstance] = {
                 clockInTime: state.newClockInInstances[lastClockInInstance].clockInTime,
-                clockOutTime: action.clockOutTime
+                clockOutTime: action.clockOutTime,
+                description: state.newClockInInstances[lastClockInInstance].description
             };
             return state;
         case ClockInActionTypes.putSessionInStore:

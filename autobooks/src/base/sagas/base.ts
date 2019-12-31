@@ -11,8 +11,8 @@ import {getNewClockInstances} from "../../App";
 import {StoreInterface} from "../../configureStore";
 
 function * clockInSaga(action: ClockInAction) {
-    let {clockInTime} = action;
-    yield put(addClockInToStore(clockInTime));
+    let {clockInTime, description} = action;
+    yield put(addClockInToStore(clockInTime, description));
     yield call(addStoreToSession);
 
 }

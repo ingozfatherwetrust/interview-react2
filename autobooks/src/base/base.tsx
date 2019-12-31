@@ -10,6 +10,7 @@ import {bindActionCreators, Dispatch} from "redux";
 
 interface TimeEntryState {
     clockedIn: boolean;
+    description: string;
 }
 type props = {};
 
@@ -18,7 +19,7 @@ interface PropsFromState {
 }
 
 interface PropsFromDispatch {
-    clockIn: (clockInTime: number) => ClockInAction;
+    clockIn: (clockInTime: number, description: string) => ClockInAction;
     clockOut: (clockOutTime: number) => ClockOutAction;
     getSessionData: () => GetSessionDataAction;
 }
@@ -31,7 +32,8 @@ class Base extends Component<ComponentProps, TimeEntryState> {
         super(props);
 
         this.state = {
-            clockedIn: false
+            clockedIn: false,
+            description: ''
         };
     }
     private onClockInPressed = () => {
@@ -41,7 +43,7 @@ class Base extends Component<ComponentProps, TimeEntryState> {
         this.setState({
             clockedIn: true
         });
-        this.props.clockIn(newTimeEntry.clockInTime);
+        this.props.clockIn(newTimeEntry.clockInTime, this.state.description);
     };
     private onClockOutPressed = () => {
         const newTimeEntries = this.props.timeEntries;
@@ -64,8 +66,8 @@ class Base extends Component<ComponentProps, TimeEntryState> {
         }
     }
 
-    private setDescription = (description: string) => {
-        console.log(description)
+    private setDescription = async (description: string) => {
+        await this.setState({description});
     };
 
     render() {

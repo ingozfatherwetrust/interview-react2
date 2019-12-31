@@ -87,6 +87,7 @@ export class AutoBooksTable extends Component <TableProps> {
                         <TableCell>{clockInTimeString}</TableCell>
                         <TableCell>{clockOutTimeString}</TableCell>
                         <TableCell>{durationString}</TableCell>
+                        <TableCell>{timeEntry.description}</TableCell>
                     </TableRow>
                 )
             }))
