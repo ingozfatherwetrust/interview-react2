@@ -1,15 +1,19 @@
 import {Action} from "redux";
+import {TimeEntry} from "../../autoBooksTable/autoBooksTable";
 
 export enum ClockInActionTypes {
     clockIn = 'clockIn',
     clockOut = 'clockOut',
     addClockInToStore = 'addClockInToStore',
-    addClockOutToStore = 'addClockOutToStore'
+    addClockOutToStore = 'addClockOutToStore',
+    getSessionData = 'getSessionData',
+    putSessionInStore = 'putSessionInStore'
 }
 
 export interface ClockInAction extends Action{
     type: ClockInActionTypes.clockIn,
-    clockInTime: number
+    clockInTime: number,
+    description: string
 }
 
 export interface ClockOutAction extends Action{
@@ -20,6 +24,7 @@ export interface ClockOutAction extends Action{
 export interface AddClockInToStoreAction extends Action{
     type: ClockInActionTypes.addClockInToStore,
     clockInTime: number
+    description: string
 }
 
 export interface AddClockOutToStoreAction extends Action{
@@ -27,10 +32,20 @@ export interface AddClockOutToStoreAction extends Action{
     clockOutTime: number
 }
 
-export function clockIn(clockInTime: number): ClockInAction {
+export interface GetSessionDataAction extends Action {
+    type: ClockInActionTypes.getSessionData
+}
+
+export interface PutSessionInStoreAction extends Action {
+    type: ClockInActionTypes.putSessionInStore,
+    timeEntries: TimeEntry[]
+}
+
+export function clockIn(clockInTime: number, description: string): ClockInAction {
     return {
         type: ClockInActionTypes.clockIn,
-        clockInTime
+        clockInTime,
+        description
     }
 }
 
@@ -41,10 +56,11 @@ export function clockOut(clockOutTime: number): ClockOutAction {
     }
 }
 
-export function addClockInToStore(clockInTime: number): AddClockInToStoreAction {
+export function addClockInToStore(clockInTime: number, description: string): AddClockInToStoreAction {
     return {
         type: ClockInActionTypes.addClockInToStore,
-        clockInTime
+        clockInTime,
+        description
     }
 }
 
@@ -52,5 +68,18 @@ export function addClockOutToStore(clockOutTime: number): AddClockOutToStoreActi
     return {
         type: ClockInActionTypes.addClockOutToStore,
         clockOutTime
+    }
+}
+
+export function getSessionData(): GetSessionDataAction {
+    return {
+        type: ClockInActionTypes.getSessionData
+    }
+}
+
+export function putSessionInStore(timeEntries: TimeEntry[]): PutSessionInStoreAction {
+    return {
+        type: ClockInActionTypes.putSessionInStore,
+        timeEntries
     }
 }
