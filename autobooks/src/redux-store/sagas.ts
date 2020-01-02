@@ -5,5 +5,5 @@ export default function * main() {
     const sagas = [
         baseMain()
     ];
-    yield all(sagas)
+    yield all(sagas);
 }
