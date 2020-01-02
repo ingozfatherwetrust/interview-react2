@@ -30,7 +30,7 @@ function * addStoreToSession() {
 
 function * getSessionSaga() {
     let sessionData = yield sessionStorage.getItem('clockInTimes');
-    yield put(putSessionInStore(JSON.parse(sessionData)))
+    yield put(putSessionInStore(JSON.parse(sessionData)));
 }
 
 export default function* baseMain() {

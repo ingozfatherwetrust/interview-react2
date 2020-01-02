@@ -27,10 +27,8 @@ export class AppHeader extends Component<AppHeaderProps, AppHeaderState> {
     render() {
         return(
             <div>
-                {/*<Grid container xs={12} className={'spacedRow'}>*/}
-                    <h1>Time Sheet</h1>
-                    <input type="text" onChange={this.headerTextChanged} placeholder='task description' disabled={this.props.isClockedIn}/>
-                {/*</Grid>*/}
+                <h1>Time Sheet</h1>
+                <input type="text" onChange={this.headerTextChanged} placeholder='task description' disabled={this.props.isClockedIn}/>
             </div>
         )
     }

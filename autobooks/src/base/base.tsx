@@ -2,7 +2,7 @@ import React from 'react';
 import {Component} from "react";
 import {Grid} from "@material-ui/core";
 import {AppHeader} from "../header/appHeader";
-import {AutoBooksTable, TimeEntry} from "../autoBooksTable/autoBooksTable";
+import {AutoBooksTable, getDuration, TimeEntry} from "../autoBooksTable/autoBooksTable";
 import {TimerButton} from "../timer/timerButton";
 import {clockIn, ClockInAction, clockOut, ClockOutAction, getSessionData, GetSessionDataAction} from "./actions/base";
 import {connect} from "react-redux";
@@ -11,6 +11,8 @@ import {bindActionCreators, Dispatch} from "redux";
 interface TimeEntryState {
     clockedIn: boolean;
     description: string;
+    activeDuration?: string;
+    timer?: any
 }
 type props = {};
 
@@ -33,7 +35,8 @@ class Base extends Component<ComponentProps, TimeEntryState> {
 
         this.state = {
             clockedIn: false,
-            description: ''
+            description: '',
+            timer: undefined
         };
     }
     private onClockInPressed = () => {
@@ -44,14 +47,29 @@ class Base extends Component<ComponentProps, TimeEntryState> {
             clockedIn: true
         });
         this.props.clockIn(newTimeEntry.clockInTime, this.state.description);
+        this.setState({timer: this.startTimer()});
     };
+
+    private startTimer = () => {
+        return setInterval(() => {
+            let currentEpoch = Date.now();
+            let {hoursDuration, minutesDuration, secondsDuration} = getDuration(currentEpoch - this.props.timeEntries[this.props.timeEntries.length - 1].clockInTime);
+            this.setState({
+                activeDuration: `${hoursDuration} hours, ${minutesDuration} minutes, ${secondsDuration} seconds`
+            });
+        }, 1000);
+    }
+
+
     private onClockOutPressed = () => {
         const newTimeEntries = this.props.timeEntries;
         const lastItem = newTimeEntries.length - 1;
         newTimeEntries[lastItem].clockOutTime = Date.now();
         this.setState({
-            clockedIn: false
+            clockedIn: false,
+            activeDuration: undefined
         });
+        clearInterval(this.state.timer);
         this.props.clockOut((newTimeEntries[lastItem].clockOutTime as number));
     };
     async componentDidMount() {
@@ -62,7 +80,8 @@ class Base extends Component<ComponentProps, TimeEntryState> {
         if(this.props.timeEntries.length > 0 && this.props.timeEntries[this.props.timeEntries.length - 1].clockOutTime == undefined) {
             this.setState({
                 clockedIn: true
-            })
+            });
+            this.startTimer();
         }
     }
 
@@ -80,7 +99,7 @@ class Base extends Component<ComponentProps, TimeEntryState> {
                     alignItems="center"
                 >
                     <AppHeader descriptionChanged={this.setDescription} isClockedIn={this.state.clockedIn}/>
-                    <AutoBooksTable newClockInInstances={this.props.timeEntries}/>
+                    <AutoBooksTable newClockInInstances={this.props.timeEntries} activeDuration={this.state.activeDuration}/>
                     <TimerButton onPressClockIn={this.onClockInPressed} onPressClockOut={this.onClockOutPressed} isClockedIn={this.state.clockedIn}/>
                 </Grid>
             </div>
@@ -98,4 +117,4 @@ const mapDispatchToProps = (dispatch: Dispatch): PropsFromDispatch => ({
     getSessionData: bindActionCreators(getSessionData, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Base)
+export default connect(mapStateToProps, mapDispatchToProps)(Base);
